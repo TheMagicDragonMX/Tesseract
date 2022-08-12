@@ -1,0 +1,6 @@
+{
+    "sketch": "Testing_array_library.ino",
+    "configuration": "cpu=atmega2560",
+    "board": "arduino:avr:mega",
+    "port": "COM3"
+}

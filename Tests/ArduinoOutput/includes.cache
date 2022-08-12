@@ -1,0 +1,32 @@
+[
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino"
+  },
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\variants\\mega"
+  },
+  {
+    "Sourcefile": "c:\\Users\\turbo\\OneDrive\\Escritorio\\Mine =)\\LED Cube 8 x 8 x 8\\Tests\\ArduinoOutput\\sketch\\Debugging_my_library.ino.cpp",
+    "Include": "LedCube8x8x8.h",
+    "Includepath": "C:\\Users\\turbo\\OneDrive\\Documentos\\Arduino\\libraries\\LedCube8x8x8"
+  },
+  {
+    "Sourcefile": "c:\\Users\\turbo\\OneDrive\\Escritorio\\Mine =)\\LED Cube 8 x 8 x 8\\Tests\\ArduinoOutput\\sketch\\Debugging_my_library.ino.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\turbo\\OneDrive\\Documentos\\Arduino\\libraries\\LedCube8x8x8\\Led.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\turbo\\OneDrive\\Documentos\\Arduino\\libraries\\LedCube8x8x8\\LedCube8x8x8.cpp",
+    "Include": "",
+    "Includepath": null
+  }
+]

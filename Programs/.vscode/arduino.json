@@ -1,0 +1,5 @@
+{
+    "sketch": "Saying_Words.ino",
+    "configuration": "cpu=atmega2560",
+    "board": "arduino:avr:mega"
+}

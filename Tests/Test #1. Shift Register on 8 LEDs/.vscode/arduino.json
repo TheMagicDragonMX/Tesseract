@@ -1,0 +1,5 @@
+{
+    "sketch": "FirstTest_Playing_with_8_leds.ino",
+    "board": "arduino:avr:uno",
+    "port": "COM5"
+}

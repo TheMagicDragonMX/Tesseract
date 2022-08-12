@@ -1,0 +1,5 @@
+{
+    "sketch": "SecondTest_Playing_with_PWM_Shift_Register_in_8_LEDs.ino",
+    "board": "arduino:avr:uno",
+    "port": "COM5"
+}

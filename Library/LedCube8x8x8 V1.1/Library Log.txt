@@ -1,0 +1,31 @@
+LedCube8x8x8.h
+==== Log ====
+
+Problem: Not getting anything from the Cube Array
+#1. I was using digitalWrite() before using pinMode(), I moved that to setCubePins()
+
+#2. Ok, for each works just if the array actually contains something
+
+#3. Arrays must me initialized
+
+#4. Yay! Now the Cube Array shows values
+
+Problem: Setter functions are not working
+#5. Using for works, but range based for doesn't
+
+#6. Yay! Iterator item must be a reference if we want to change its content
+
+Problem: The cube is not lighting up
+#7. Ok I'll be atempting to work with the top floor so I can see if the registers are getting data
+
+#8. Check if floorID array is working
+
+#9. Bruh I initialized wrong the array
+
+#10. Nope, it wasn't the array... Which makes sense, going back to entry #8
+
+#11. Yup, it's working, going back to entry #7
+
+#12. Well, the turnOnFloor() function is doing well
+
+#13. 

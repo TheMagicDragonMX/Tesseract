@@ -1,0 +1,6 @@
+{
+    "sketch": "Playing_for_a_bit_with_my_library.ino",
+    "configuration": "cpu=atmega2560",
+    "board": "arduino:avr:mega",
+    "port": "COM7"
+}

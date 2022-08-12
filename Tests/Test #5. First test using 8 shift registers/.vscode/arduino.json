@@ -1,0 +1,6 @@
+{
+    "sketch": "First_test_using_8_shift_registers.ino",
+    "configuration": "cpu=atmega2560",
+    "board": "arduino:avr:mega",
+    "port": "COM3"
+}

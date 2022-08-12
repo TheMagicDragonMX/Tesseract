@@ -1,0 +1,96 @@
+30 / June / 2021
+1.- initializeLeds() was not written in the object constructor
+2.- When initializing the leds, the values for each one were wrong because of pow() fuction, so a new one was created, this time with byte type
+3.- Now significance attribute gets accurate values
+4.- No problems were found with the pin configuration
+5.- Nope, still the cube doesn't work, gotta continue with the debug
+6.- The initial state of the leds is Ok, every one is LOW at the beggining of any program
+7.- There is nothing wrong with all the setup fuctions, which means the problem is the the one that actually lights up the cube >.<
+8.- Ok so, in the fuction getRowValues(), first it was a byte fuction but it didn't return nothing, so changed it to void and its name to setRowValues(), then inside this fuction was also written the pow() fuction, so I changed it to powInByte()
+9.- Nope, still doesn't work, BUT it lights up some leds, which means there is progress boisss
+10.- clearRegisters() works fine, gotta test clearRegisterValues() which in fact makes me test setRowValues() too
+11.- Ok, some changes were done here.
+- First, clearRegisterValues() works fine, no problem there
+- Second, the fuction was just geting the values of every led no matter if they were HIGH or LOW, an if block there did the trick
+- Third, the registerValues array is getting the numbers form rows instead of columns, the reason is written bellow
+- Fourth, the fuction should not be named setRowValues() because it is not getting the numbers form every Row (that would be adding the same significance on every led)
+
+01 / July / 2021
+12.- Well, it still doesn't work, but it is getting closer, i was trying to light up one floor, and I saw how it lighted up for the blink of an eye
+13.- Nothing wrong with the turnOnFloor() method
+14.- Nothing wrong with the shiftOutNewValues() method too
+15.- Ok so, what was wrong is that setTimeOn still gave time to the led when no time was given (ALWAYS_ON by default), so I added an if clause to solve it
+16.- It ALMOST works, it is just a matter of velocity and debug of the lightUp function
+17.- Ok so, made some tests about how much the system needs in microseconds to show the entire cube on without blinking, the result was 18000 microsecods, 18 millis
+
+*18.-* So, a big change is coming
+So, while testing the library and the times, I realized that I need to change the base circuit, that's because when going at high speed, the shift registers start to act like a wave, and those who are closer to the arduino data pin glow more that the ones that are far away as their are connected in cascade, what basiclly means that the speed is making the far ones 
+to make low unwanted PWM. I now need to separate them, they can keep the same latch and possibly clock pin, but they wont have the same data pin.
+This won't solve the problem yet, because making this change would only change my code without changing the execution time, right now a shiftOut() function is run in a loop, one by one. Giving each register its own data pin would make me to shiftOut for every register so the execution will be one by one again.
+The improvement comes with the fact that with the new circuit I'll be able to check if an entire shift register data changed during the control phase, that will allow me not wasting time by shifting a value once again, so I can get more time on the glowing phase.
+
+##. I added the boolean variable floorChanged in the checkLedsTimeOn() method, the constructor of the LedCube object
+
+(delay of 100 millis)
+Leds: 103250 micro
+Control: 2950 micro
+
+(delay of 10 millis)
+Leds: 33280 micro
+Control: 14560 micro
+
+(delay of 1 milli)
+Leds: 4400
+Control: 3080
+
+(No delay, 115200 baud rate)
+Leds: 3500
+Control: 3176
+
+(No delay, 115200 baud rate, less print() commands)
+Leds: 3104
+Control: 2890
+
+02 / July / 2021
+19.- Uhm, my latest plan was ok... But I was thinking that it might not be trully necessary, and here is why.
+The fact that the leds were glowing not too much wasn't because of the velocity of the shift registers in cascade, they do contribute to the problem, but not too much as the next thing I'm going to say. Yes, the transmision of data is slow, but then I realized that, in fact, animations on the led cube weren't going to be that incredibly fast, I spent all this time thinking that the animations should load as fast as the cube lights up enough to fool human eye, but that is not what we want in thea animations, they will barely be less than a quarter of a second, and between this transitions, the leds wont change over time, the same data is going to be displayed for this amount of time, so I just need to worry on data changes when the animation is mooving, and the time data doesn't not change could be used to make the leds glow more with almost maximum In-Action PWM. This last thing lets me to explain why leds were glowing that low:
+The program has two basic phases, the one were all the operations are done in order to display the correct leds, and the one where leds are lighted up by activating their specific floor. As you may see, the second phase takes much less time of executing than the first one, and there is no delay between those phases because we do want the program to run as fast as possible. So, what we have here is two moments when leds are on and off between a unit of time that repeats consistenly very fast, as you can imagine, that is how PWM works, so, what was happening is that the average of time where the leds were on was less that the time they were off, less o average, less simulated voltage and less brightess from the leds.
+
+20.- I wanted to ensure that I'll be able to handle the In-Action PWM, so I change a little bit of the program, now it measures the time that was spent on the control phase, and makes a delay of that time when the leds are On, that means 50% of the time where they are glowing, which means 50% of brightness. Lets remember that with some tests that I made yesterday, I got the minimum time that the cube has to light all their floors without that noisy blinking thing, the result was 18 millis. In average, the control phase takes around 2900 us (measured yesterday) , if we double it we get 5800 us, and if we multiply it by 8 (because there are 8 floors), we get around 40 millis, so that's why I'm seeing the blinking on the cube, but I gotta say that the blinking is not as much as I expected for 40 millis, I mean.. It almost tripples the minimum necessary time... That makes me wonder if the measured time is correct, It might be not because as you can see in the measures, even the serial print instructions acted like a delay for the sistem at some point, but that was the fastest I could get the serial to work, at least using the values that Arduino's website recommends.
+
+Now I'll make the program to detect if the data is changing, that will save me more shiftOut functions
+
+21.- Quick note, I moved the latch operation on the shiftOutNewValues() method out of the loop, it doesn't make sense to turn on and off the latch pin at that speed (and maybe that would save me more us too), now lets work on the same data detection
+
+22.- Another quick note, the change made on note 20 made the library to work well, I was able to light up only the leds that I wanted to light up, but I could see that forevery led that was on, the same led but one floor down was also on like a phantom, not as much as the original, but it was on, I suppose that this is because of the lack of same data detection system, which makes the cube slower.
+
+23.- Lol, the change on note 21 made the phantom led to glow even less, that's great yes yes yes
+
+24.- Made a rename on registerValues array and clearRegisterValues() method, now they are known as floorValues and clearFloorValues()
+
+03 / July / 2021
+25.- Yesterday in evening, I realized that I won't be able to make the leds glow more that the maximum capacity they will have, the max In-Action PWM average on the cube will be 1/8 no matter what, my initial idea was to get the time spent in the control phase and then light up the leds the same time, or even more, but I was not noticing that doing that would also increase the time the other floors wouldn't be glowing, which means that, no matter the timing, I can only get 1/8 of the glow power on every led.
+To make leds more brighter, I can do two things: decrease the resistance or make a driver to every led connected to a more bigger power supply. These changes are optional, because the brightness I get now is not that bad. With that said, the only thing that rest is to remove that little blinking on the leds, and the cube driver will be complete
+
+26.- I just realized that I don't need to get how many floors changed their data, because if one of them need change, the other ones would need to adjust their time on too, resulting in the same 1/8 proportion, that means that I only need to see if one led on the entire array changed
+
+27.- Ok so, I put a flag that keeps track of the cube's state, when setting what the cube is going to display on the setting methods, if the given state exor the actual state of the led is 1, then that means that the data chaged, I put that on all the setting methods and then evaluate if the flag was on when calling the setFloorConfiguration() method, but I saw no change. 
+
+28.- I started to debug, I can see that the flag is always on which is wrong, I'll see why
+
+29.- Bruh I can just use != instead of using exor |
+
+30.- At the end, no flag is needed, in fact is worse because at the end all the floors must light up with the same time in between, making the process of setting and analyzing the flag adds more time in the control phase, which means that the library is almost done :D
+
+31.- I wanted to finally remove that phantom led that appears every time, I supposed that it was because a floor was still on when the control phase of the next floor was executing, so I decided to turn off the floor with a turnOffFloor() method, that just annihilated the phantom led 
+
+32.- Made a small change in the new lightUp() function, right now I measuree the time spent on the control phase and make floors to stay on for the same amount of time, but I realized that I can control that time too, instead of delaying the same time, I made some adjustments that ended up delaying 8/10 times the time spent on the control phase, that did remove the blinking from the cube, at the cost of some brightness (not really too much). 
+
+33.- HOLY COW, folks, the library is FINALLY DONE LETS GOOOOOOOOO
+_You sure?_
+Ou, well, its 95% done, I'm missing the brightness control part, but I didn't prepare the circuit for it hahahaha, I just need to conect all the OE together into a potenciomenter... Nieeeeeh let's procrastinate that
+
+34.- Well, due to how the cube works, is impossible to give brightness control to my boy
+
+
+
